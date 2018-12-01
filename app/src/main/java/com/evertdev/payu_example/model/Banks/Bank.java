@@ -77,4 +77,9 @@ public class Bank {
         }
         return banks;
     }
+
+    @Override
+    public String toString(){
+        return description;
+    }
 }

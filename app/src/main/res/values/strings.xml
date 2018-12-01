@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">PayU-Example</string>
+
+    <string-array name="documents_type">
+        <item>CC</item>
+        <item>CE</item>
+        <item>NIT</item>
+        <item>TI</item>
+        <item>IDC</item>
+        <item>CEL</item>
+        <item>RC</item>
+        <item>DE</item>
+    </string-array>
+
+    <string-array name="client_type">
+        <item>Persona Natural</item>
+        <item>Persona Juridica</item>
+    </string-array>
 </resources>
