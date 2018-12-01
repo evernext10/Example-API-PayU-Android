@@ -1,14 +1,18 @@
 package com.evertdev.payu_example;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -166,11 +170,7 @@ public class MainActivity extends AppCompatActivity {
                                         if(TextUtils.isEmpty(document_selected)){
                                             Toast.makeText(MainActivity.this, "Por favor seleccionar el tipo de documento", Toast.LENGTH_SHORT).show();
                                         }else{
-                                            if(TextUtils.isEmpty(bank_selected)){
-                                                Toast.makeText(MainActivity.this, "Por favor seleccionar el banco", Toast.LENGTH_SHORT).show();
-                                            }else{
-                                                checkout();
-                                            }
+                                            checkout();
                                         }
                                     }
                                 }
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         String json_checkout = gson.toJson(payUBuy);
 
         AndroidNetworking.post(common.BASE_URL_PAGOS)
-                .addApplicationJsonBody(json_checkout)
+                .addBodyParameter(json_checkout)
                 .setContentType(common.CONTENT_TYPE)
                 .addHeaders("Content-Type",common.CONTENT_TYPE)
                 .setPriority(Priority.HIGH)
@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_SHORT).show();
+                        viewResponse(response);
 
                     }
                     @Override
@@ -269,6 +270,37 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
+    }
+
+    private void viewResponse(JSONObject response) {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.layout_response,null);
+        dialog.setView(dialogView);
+
+        TextView order_id = (TextView)dialogView.findViewById(R.id.orden_id);
+        TextView state = (TextView)dialogView.findViewById(R.id.state);
+        TextView transactionId = (TextView)dialogView.findViewById(R.id.transactionId);
+        TextView operationDate = (TextView)dialogView.findViewById(R.id.operationDate);
+
+        try {
+            order_id.setText(response.getJSONObject("transactionResponse").getString("orderId"));
+            state.setText(response.getJSONObject("transactionResponse").getString("state"));
+            transactionId.setText(response.getJSONObject("transactionResponse").getString("transactionId"));
+            operationDate.setText(response.getJSONObject("transactionResponse").getString("operationDate"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        dialog.setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.create();
+        dialog.show();
     }
 
     private void getBanks() {
@@ -305,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_SHORT).show();
+
                         try{
                             if(response.getString("code").equals(common.SUCCESS)){
                                 JSONArray jsonArray_banks = response.getJSONArray("banks");
