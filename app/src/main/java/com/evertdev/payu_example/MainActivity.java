@@ -13,6 +13,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.evertdev.payu_example.common.common;
+import com.evertdev.payu_example.model.Banks.Bank;
 import com.evertdev.payu_example.model.Banks.BankListInformation;
 import com.evertdev.payu_example.model.Banks.Merchant;
 import com.evertdev.payu_example.model.Banks.PayUGetBaks;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner_banks;
     ArrayList<String> banks_name;
     String bank_selected = "";
+    ArrayList<Bank> banks;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
         banks_name = new ArrayList<>();
         spinner_banks = (Spinner) findViewById(R.id.spinner_banks);
+        banks = new ArrayList<>();
 
-        PayUGetBaks baks = new PayUGetBaks();
+        final PayUGetBaks baks = new PayUGetBaks();
         BankListInformation bankListInformation = new BankListInformation();
         Merchant merchant = new Merchant();
 
@@ -90,22 +94,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         AndroidNetworking.post(common.BASE_URL_CONSULTAS)
-                .addStringBody(json_get)
+                .addApplicationJsonBody(json_get)
+                .setContentType(common.CONTENT_TYPE)
+                .addHeaders("Content-Type",common.CONTENT_TYPE)
                 .setPriority(Priority.HIGH)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_SHORT).show();
                         try{
                             if(response.getString("code").equals(common.SUCCESS)){
                                 JSONArray jsonArray_banks = response.getJSONArray("banks");
-                                for(int i = 0; i<jsonArray_banks.length();i++){
-                                    JSONObject object =jsonArray_banks.getJSONObject(i);
-                                    String name = object.getString("description");
-                                    banks_name.add(name);
-                                }
+                                banks.clear();
+                                banks.addAll(Bank.fromJSONArray(jsonArray_banks));
                             }
-                            spinner_banks.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, banks_name));
+                            spinner_banks.setAdapter(new ArrayAdapter<Bank>(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, banks));
                         }catch (JSONException e){
                             e.printStackTrace();
                         }

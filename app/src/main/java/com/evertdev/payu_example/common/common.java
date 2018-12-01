@@ -18,6 +18,10 @@ public class common {
 
     public static String SUCCESS = "SUCCESS";
 
+    public static String CONTENT_TYPE = "application/json";
+
+
+
 
 
 
