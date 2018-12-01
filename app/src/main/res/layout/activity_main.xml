@@ -47,7 +47,7 @@
                 android:text="Selecciona el Banco:" />
 
             <Spinner
-                android:id="@+id/spinner_environment"
+                android:id="@+id/spinner_banks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />

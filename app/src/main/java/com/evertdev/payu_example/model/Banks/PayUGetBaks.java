@@ -6,9 +6,9 @@ import com.evertdev.payu_example.model.Banks.Merchant;
 public class PayUGetBaks {
     private String language;
     private String command;
-    Merchant MerchantObject;
+    Merchant merchant;
     private boolean test;
-    BankListInformation BankListInformationObject;
+    BankListInformation bankListInformation;
 
 
     // Getter Methods
@@ -22,7 +22,7 @@ public class PayUGetBaks {
     }
 
     public Merchant getMerchant() {
-        return MerchantObject;
+        return merchant;
     }
 
     public boolean getTest() {
@@ -30,7 +30,7 @@ public class PayUGetBaks {
     }
 
     public BankListInformation getBankListInformation() {
-        return BankListInformationObject;
+        return bankListInformation;
     }
 
     // Setter Methods
@@ -44,14 +44,14 @@ public class PayUGetBaks {
     }
 
     public void setMerchant(Merchant merchantObject) {
-        this.MerchantObject = merchantObject;
+        this.merchant = merchantObject;
     }
 
     public void setTest(boolean test) {
         this.test = test;
     }
 
-    public void setBankListInformation(BankListInformation bankListInformationObject) {
-        this.BankListInformationObject = bankListInformationObject;
+    public void setBankListInformation(BankListInformation bankListInformation) {
+        this.bankListInformation = bankListInformation;
     }
 }
